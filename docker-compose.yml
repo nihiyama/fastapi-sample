@@ -1,0 +1,14 @@
+version: "3.0"
+
+services:
+  db:
+    image: "postgres:12.1-alpine"
+    container_name: "db"
+    volumes:
+      - "./volumes/data:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=goapostgres
+      - POSTGRES_PASSWORD=goapostgres
+      - POSTGRES_DB=goapostgres
+    ports:
+      - "5432:5432"
