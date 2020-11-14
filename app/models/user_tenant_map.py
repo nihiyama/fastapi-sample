@@ -1,6 +1,6 @@
 from sqlalchemy import (Table, ForeignKey, Column, Integer)
 
-from app.database import Base
+from app.db.database import Base
 
 user_tenant_map_table = Table(
     'user_tenant_map',

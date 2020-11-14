@@ -4,7 +4,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationships
 
-from app.database import Base
+from app.db.database import Base
 from app.models.user_tenant_map import user_tenant_map_table
 
 
@@ -14,7 +14,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), unique=True, index=True)
     hashed_password = Column(String(255), nullable=False)
-    is_admin = Column(Boolean, default=False)
+    is_superuser = Column(Boolean, default=False)
 
     tenants = relationships(
         "Tenant",

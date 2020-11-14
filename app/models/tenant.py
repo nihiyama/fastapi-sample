@@ -4,7 +4,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationships
 
-from app.database import Base
+from app.db.database import Base
 
 
 class Tenant(Base):
