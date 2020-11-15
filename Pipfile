@@ -10,6 +10,7 @@ sqlalchemy = "*"
 alembic = "*"
 python-jose = "*"
 passlib = "*"
+tenacity = "*"
 
 [dev-packages]
 flake8 = "*"

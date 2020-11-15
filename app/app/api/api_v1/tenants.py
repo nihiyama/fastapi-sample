@@ -16,8 +16,7 @@ async def read_tenants(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_super_user)
 ) -> Any:
-    """
-    Get tennants.
+    """Get tennants.
 
     Args:
         db (Session, optional): [description].
@@ -41,8 +40,7 @@ async def read_tenant_by_id(
     tenant_id: int,
     current_user: models.User = Depends(deps.get_current_super_user)
 ) -> Any:
-    """
-    Get tenant by id.
+    """Get tenant by id.
 
     Args:
         db (Session, optional): [description].
@@ -68,8 +66,7 @@ async def create_tenant(
     tenant_in: schemas.TenantCreate,
     current_user: models.User = Depends(deps.get_current_superuser)
 ) -> Any:
-    """
-    Create tenant
+    """Create tenant
 
     Args:
         tenant_in (schemas.TenantCreate): [description]
@@ -95,8 +92,7 @@ async def update_tenant(
     tenant_in: schemas.TenantUpdate,
     current_user: models.User = Depends(deps.get_current_superuser)
 ) -> Any:
-    """
-    Update tenants
+    """Update tenants
 
     Args:
         tenant_id (int): [description]
@@ -129,8 +125,7 @@ async def delete_tenant(
     tenant_id: int,
     current_user: models.User = Depends(deps.get_current_superuser)
 ) -> Any:
-    """
-    Delete tenant.
+    """Delete tenant.
 
     Args:
         tenant_id (int): [description]

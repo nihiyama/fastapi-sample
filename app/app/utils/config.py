@@ -1,4 +1,5 @@
 import secrets
+import os
 from typing import Any, Dict, List, Optional, Union
 
 from pydantic import (
@@ -8,12 +9,17 @@ from pydantic import (
 
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "api/v1"
+    API_V1_STR: str = os.getenv("API_V1_STR", "api/v1")
     SECRET_KEY: str = secrets.token_urlsafe(32)
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 1
-    SERVER_NAME: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
+        os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+    SERVER_NAME: str = os.getenv("SERVER_NAME", "project")
     SERVER_HOST: AnyHttpUrl
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+        e for e in os.getenv(
+            "BACKEND_CORS_ORIGINS",
+            "*").split(",")
+    ]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origin(
@@ -33,10 +39,10 @@ class Settings(BaseSettings):
             return None
         return v
 
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "postgres")
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
@@ -52,8 +58,9 @@ class Settings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
-    FIRST_SUPERUSER: str
-    FIRST_SUPERUSER_PASSWORD: str
+    FIRST_SUPERUSER: str = os.getenv("FIRST_SUPERUSER", "admin")
+    FIRST_SUPERUSER_PASSWORD: str = os.getenv(
+        "FIRST_SUPERUSER_PASSWORD", "admin")
 
     class Config:
         case_sensitive = True

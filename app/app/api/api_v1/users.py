@@ -17,8 +17,7 @@ async def read_users(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_superuser),
 ) -> Any:
-    """[summary]
-    Get all users.
+    """Get all users.
 
     Args:
         db (Session, optional): [description].
@@ -42,8 +41,7 @@ async def create_user(
     user_in: schemas.UserCreate,
     current_user: models.User = Depends(deps.get_current_superuser)
 ) -> Any:
-    """
-    Create new user.
+    """Create new user.
 
     Args:
         user_in (schemas.UserCreate): [description]
@@ -73,8 +71,7 @@ async def read_user_me(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_user)
 ) -> Any:
-    """
-    Get me.
+    """Get me.
 
     Args:
         db (Session, optional): [description].
@@ -97,8 +94,7 @@ async def update_user_me(
     password: str = Body(None),
     current_user: models.User = Depends(deps.get_current_user)
 ) -> Any:
-    """
-    Update me.
+    """Update me.
 
     Args:
         db (Session, optional): [description]. D
@@ -125,8 +121,7 @@ async def read_user_by_id(
     current_user: models.User = Depends(deps.get_current_user),
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    """
-    Get user by user id
+    """Get user by user id
 
     Args:
         user_id (int): [description]
@@ -158,8 +153,7 @@ async def update_user_by_id(
     current_user: models.User = Depends(deps.get_current_user),
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    """
-    Update user by user id
+    """Update user by user id
 
     Args:
         user_id (int): [description]
@@ -189,8 +183,7 @@ async def delete_user_by_id(
     user_id: int,
     current_user: models.User = Depends(deps.get_current_user)
 ):
-    """
-    DeleteUser
+    """DeleteUser
 
     Args:
         user_id (int): [description]
