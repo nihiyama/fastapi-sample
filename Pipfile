@@ -11,6 +11,9 @@ alembic = "*"
 python-jose = "*"
 passlib = "*"
 tenacity = "*"
+psycopg2-binary = "*"
+bcrypt = "*"
+python-multipart = "*"
 
 [dev-packages]
 flake8 = "*"

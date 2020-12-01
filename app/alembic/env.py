@@ -3,10 +3,11 @@ import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+from sqlalchemy.schema import MetaData
 
 from alembic import context
 
-from ..app.db.database import Base
+from app.models import tenant, user, user_tenant_map
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,13 +21,29 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+
+
+def combine_metadata(*args):
+    m = MetaData()
+    for metadata in args:
+        for t in metadata.tables.values():
+            t.tometadata(m)
+    return m
+
+
+target_metadatas = [
+    tenant.Base.metadata,
+    user.Base.metadata,
+    user_tenant_map.Base.metadata
+]
+
+target_metadata = combine_metadata(*target_metadatas)
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
 
 def get_url():
     user = os.getenv("POSTGRES_USER", "postgres")

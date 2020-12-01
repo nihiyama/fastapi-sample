@@ -5,8 +5,22 @@ services:
     image: "fastpai-app:1.0"
     container_name: "app"
     volumes:
-      - "./volumes/data:/var/lib/postgresql/data"
-
+      - "./app:/opt/app"
+    environment:
+      - APP_ENV=development
+      - API_V1_STR=/api/v1
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - BACKEND_CORS_ORIGINS=["http://localhost", "http://localhost:8000", "http://localhost:8080", "http://0.0.0.0"]
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=fastapi
+      - POSTGRES_PASSWORD=fastapi
+      - POSTGRES_DB=fastapi
+      - FIRST_SUPERUSER=admin
+      - FIRST_SUPERUSER_PASSWORD=admin
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
   db:
     image: "postgres:12.1-alpine"
     container_name: "db"

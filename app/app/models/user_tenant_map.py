@@ -5,6 +5,6 @@ from app.db.database import Base
 user_tenant_map_table = Table(
     'user_tenant_map',
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('user.id')),
-    Column('tenant_id', Integer, ForeignKey('tenant.id'))
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('tenant_id', Integer, ForeignKey('tenants.id'))
 )

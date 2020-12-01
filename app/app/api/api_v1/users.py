@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/",
-            responce_model=List[schemas.User]
+            response_model=List[schemas.User]
             )
 async def read_users(
     db: Session = Depends(deps.get_db),
@@ -33,7 +33,8 @@ async def read_users(
 
 
 @router.post("/",
-             responce_model=schemas.User
+             status_code=201,
+             response_model=schemas.User
              )
 async def create_user(
     *,
@@ -57,7 +58,6 @@ async def create_user(
         raise HTTPException(
             status_code=400, detail="The user doesn't have enough privileges"
         )
-
     user = crud.user.get_by_name(db, name=user_in.name)
     user = crud.user.create(db, obj_in=user_in)
     return user
@@ -108,7 +108,7 @@ async def update_user_me(
         Any: [description]
     """
     current_user_data = jsonable_encoder(current_user)
-    user_in = schemas.UpdateUser(**current_user_data)
+    user_in = schemas.UserUpdate(**current_user_data)
     if password is not None:
         user_in.password = password
     user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
@@ -146,7 +146,7 @@ async def read_user_by_id(
     return user
 
 
-@router.put("/{user_id}", responce_model=schemas.User)
+@router.put("/{user_id}", response_model=schemas.User)
 async def update_user_by_id(
     user_id: int,
     user_in: schemas.UserUpdate,
@@ -176,7 +176,7 @@ async def update_user_by_id(
     return user
 
 
-@router.delete("/{user_id}", responce_model=schemas.User)
+@router.delete("/{user_id}", response_model=schemas.User)
 async def delete_user_by_id(
     *,
     db: Session = Depends(deps.get_db),
@@ -199,5 +199,5 @@ async def delete_user_by_id(
         raise HTTPException(
             status_code=400,
             detail="The user doesn't delete because current user")
-    user = crud.user.remove(user_id)
+    user = crud.user.remove(db, id=user_id)
     return user

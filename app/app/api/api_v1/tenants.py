@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
@@ -10,11 +10,11 @@ router = APIRouter()
 
 
 @router.get("/",
-            responce_model=List[schemas.Tenant]
+            response_model=List[schemas.Tenant]
             )
 async def read_tenants(
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_super_user)
+    current_user: models.User = Depends(deps.get_current_superuser)
 ) -> Any:
     """Get tennants.
 
@@ -27,7 +27,11 @@ async def read_tenants(
     Returns:
         Any: [description]
     """
-    tenants = crud.tenants.get_all(db)
+    if not crud.user.is_superuser(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The user doesn't have enough privileges")
+    tenants = crud.tenant.get_all(db)
     return tenants
 
 
@@ -38,7 +42,7 @@ async def read_tenant_by_id(
     *,
     db: Session = Depends(deps.get_db),
     tenant_id: int,
-    current_user: models.User = Depends(deps.get_current_super_user)
+    current_user: models.User = Depends(deps.get_current_superuser)
 ) -> Any:
     """Get tenant by id.
 
@@ -51,14 +55,21 @@ async def read_tenant_by_id(
     Returns:
         Any: [description]
     """
+    if not crud.user.is_superuser(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The user doesn't have enough privileges")
     tenant = crud.tenant.get(db, tenant_id)
     if not tenant:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item not found")
     return tenant
 
 
 @router.post("/",
-             responce_model=schemas.Tenant
+             status_code=201,
+             response_model=schemas.Tenant
              )
 async def create_tenant(
     *,
@@ -78,12 +89,16 @@ async def create_tenant(
     Returns:
         Any: [description]
     """
-    tenant = crud.tenant.create(db, tenant_in)
+    if not crud.user.is_superuser(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The user doesn't have enough privileges")
+    tenant = crud.tenant.create(db, obj_in=tenant_in)
     return tenant
 
 
 @router.put("/{tenant_id}",
-            responce_model=schemas.Tenant
+            response_model=schemas.Tenant
             )
 async def update_tenant(
     *,
@@ -105,19 +120,21 @@ async def update_tenant(
     Returns:
         Any: [description]
     """
-    tenant = crud.tenant.get(db, id=tenant_id)
-    if not tenant:
-        raise HTTPException(status_code=404, detail="Tenant not found")
     if not crud.user.is_superuser(current_user):
         raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The user doesn't have enough privileges")
+    tenant = crud.tenant.get(db, id=tenant_id)
+    if not tenant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tenant not found")
     tenant = crud.tenant.update(db, db_obj=tenant, obj_in=tenant_in)
     return tenant
 
 
 @router.delete("/{tenant_id}",
-               respoce_model=schemas.Tenant
+               response_model=schemas.Tenant
                )
 async def delete_tenant(
     *,
@@ -137,12 +154,14 @@ async def delete_tenant(
     Returns:
         Any: [description]
     """
-    tenant = crud.tenant.get(db, id=tenant_id)
-    if not tenant:
-        raise HTTPException(status_code=404, detail="Tenant not found")
     if not crud.user.is_superuser(current_user):
         raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The user doesn't have enough privileges")
+    tenant = crud.tenant.get(db, id=tenant_id)
+    if not tenant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tenant not found")
     tenant = crud.tenant.remove(db, id=tenant_id)
     return tenant

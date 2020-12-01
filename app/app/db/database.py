@@ -4,8 +4,10 @@ from sqlalchemy.orm import sessionmaker
 from app.utils.config import settings
 
 engin = create_engine(
-    settings.SQLALCHEMY_DATABASE_URI, connect_args={"check_same_thread", False}
-)
+    settings.SQLALCHEMY_DATABASE_URI,
+    # connect_args={
+    #     "check_same_thread": False},
+    pool_pre_ping=True)
 
 SessionLocal = sessionmaker(bind=engin, autocommit=False, autoflush=False)
 

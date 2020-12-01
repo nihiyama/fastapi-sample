@@ -3,9 +3,14 @@
 .vscode/*
 
 ### docker ###
+docker-compose.yml
 volumes/*
 volumes
 
+### git ###
+.git
+.git/*
+.gitignore
+
 ### python ###
-**/__pycache__
-**/__pycache__/*
+Pipfile
